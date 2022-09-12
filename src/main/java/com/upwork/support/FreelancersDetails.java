@@ -2,7 +2,7 @@ package com.upwork.support;
 
 import java.util.LinkedHashMap;
 
-public class AllFreelancersProfiles {
+public class FreelancersDetails {
 
     LinkedHashMap<String, LinkedHashMap<String, String>> freelancerMap = new LinkedHashMap<>();
 

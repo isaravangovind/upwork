@@ -1,6 +1,6 @@
 package com.upwork.support;
 
-public enum ProfileDef {
+public enum Constants {
 
 
 
@@ -13,7 +13,7 @@ public enum ProfileDef {
 
     private String profiledefinations;
 
-    ProfileDef(String profileDef) {
+    Constants(String profileDef) {
         this.profiledefinations = profileDef;
     }
 

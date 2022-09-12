@@ -1,2 +1,4 @@
-package com.upwork.steps;public class Profile {
+package com.upwork.steps;
+
+public class Profile {
 }

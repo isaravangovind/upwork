@@ -1,2 +1,4 @@
-package com.upwork.pages;public class ProfilePage {
+package com.upwork.pages;
+
+public class ProfilePage {
 }

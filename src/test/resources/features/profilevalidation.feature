@@ -7,7 +7,6 @@ Feature: Upwork Freelancer Profile Validation Based on a Keywork
     Then Get all FreeLancer Info
     And Assert at least one attribute contains "<Skill Keyword>"
     When Click on random freelancer's title
-    And Get into that freelancer's profile
     Then Assert Selected Freelancer details Matches with Freelancer Details in First Page
 #    And Assert at least one attribute contains "<keyword>"
 
