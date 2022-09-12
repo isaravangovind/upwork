@@ -13,12 +13,32 @@ import net.thucydides.core.webdriver.WebDriverFacade;
 
 public class HomeSteps extends BaseTest {
 
+    /**
+     *
+     * This Class is the Step definition contains Java method with an expression that links it to one or more Gherkin steps
+     * When Cucumber executes a Gherkin step in a scenario, it will look for a matching step definition to execute.
+     *
+     * In This Class,
+     * @Before used here to demonstrate another method to delete cookies
+     * If any Test Data Prep / other Initialization can be done in Before Method
+     *
+     *
+     * The Step definition are implemented only for Home Page
+     *
+     * @Steps Annotation - Used by Serenity
+     * Where the tester will write the actual implementation each steps defined here
+
+     **/
+
+
+
+
+
 
     @Steps
     Home home;
 
-    // @Before used here to demonstrate another method to delete cookies
-    // If any Test Data Prep / other Initialization can be done in Before Method
+
     @Before
     public void deleteCookies(){
 

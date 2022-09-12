@@ -21,13 +21,16 @@ public class Home {
     @Step("Launch the browser")
     public void launchApp() {
         homepage.open();
+        homepage.checkCaptcha();
     }
 
-    @Step("Select Category from the DropDown {category}")
+    @Step("Select {0} from the Category DropDown ")
     public void selectCategory(String category) {
+        System.out.println("Category selected");
     }
 
-    @Step("Search for the Skill set with keyword {}")
+    @Step("Type {0} Skill Set in Search Text Box and Select the respective Keyword from the Suggested DropDown")
     public void searchForSkillset(String skillKeyword) {
+        System.out.println("Skills typed");
     }
 }
