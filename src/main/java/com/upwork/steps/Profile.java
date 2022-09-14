@@ -51,22 +51,12 @@ public class Profile {
         HashMap<String, String> profilepageContents = new HashMap<>();
 //
 //        Thread.sleep(10000);
-//        HashMap<String, String> freelancerProfile = Serenity.sessionVariableCalled("FreeLancer_Profile_From_1st_Page");
+        HashMap<String, String> freelancerProfile = Serenity.sessionVariableCalled("FreeLancer_Profile_From_1st_Page");
         logger.info("Freelancer details extracted from 1st page will be compared against this individual profile page of " + randomFreelancer);
-        HashMap<String, String> freelancerProfile = new HashMap<>();
-        freelancerProfile.put("Title", "Programming Instructor | Coding coach | STEM Tutor");
-        freelancerProfile.put("CountryName", "Pakistan");
-        freelancerProfile.put("Rate", "$40.00/hr");
-        freelancerProfile.put("Skills", "[Java, C++, C, Mathematics Tutoring, Data Structure, SQL, Technology Tutoring, Data Science, Teaching Programming, Tutoring, Algorithms, Data Science Consultation, Computer Science, MySQL, Python]");
-        freelancerProfile.put("JobProgress", "100%");
-        freelancerProfile.put("Summary", "Feedback Of My Students About Me: 1. \"Sohail is a great tutor! We have gone over many types of data structures in C++ including binary trees, graphs, arrays, linked lists, stacks, and queues. We have also gone through mere basic stuff like loops so I could get a better understanding and become a better problem solver. I would definitely recommend Sohail because he is a great teacher, he really knows what he is talking about, and he leaves you more able to solve coding problems you encounter on your own. His English is amazing and he is a really nice person, whether you need a tutor or someone to work on your project, he is the guy for the job.\" 2. \"Sohail Iftikhar was available on very short notice, was highly responsive, knowledgeable, and patient. He helped tutor my son on his Java programming challenges successfully. Very happy, will engage again to help with future programming challenges. Thank you.\" 3. Absolutely pleasure working with Sohail. He knows what he does and explains well with examples. He also gave tips that i found really helpfull in my coding journey and his level of patience was just amazing. I will definately rehire Sohail. Thank you so much Sohail\" 4. \"He has an excellent way of explaining the info without wasting time. Sohail knows well what he's doing, I highly recommend Sohail.\" 5. \"Very helpful session. We worked on a big and challenging project, but he was able to break it down into more simple ideas and explains the concepts very clearly in order for me to work. I'm now confident with everything I've learned and I can use these skills for any project now.\" 6. \"Sohail is knowledgable and will help with coding in detail if you are learning. Great and reliable freelancer to work with and will respond timely.\" Hi there! Are you looking for coding tutor for programming languages like C, C ++, java, python,Matlab and C # using examples? Or if you are looking for a mentor who can guide you for your learning challenges then you're at a suitable place. I'm a Software Engineer and former programming lab instructor at PUCIT with more than five years of experience in coding tutoring and consultation. I have more than three years of experience in teaching international students online. I have worked with students from 7 years old to 65 years old. I love teaching, which is why I create enjoyable tasks with some goals in each lecture. It encourages the students and makes things easier for them. I have taught students from different backgrounds and ages. Teaching is my passion, and I give real-life examples to explain concepts. I am Stanford University certified, career coach.");
-
         logger.info(freelancerProfile.entrySet()
                 .stream()
                 .map(e -> e.getKey() + "=" + e.getValue() + "")
                 .collect(Collectors.joining(", \r\n")));
-
-        randomFreelancer = "Sohail I.";
 
 
         /**

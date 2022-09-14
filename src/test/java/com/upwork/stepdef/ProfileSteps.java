@@ -24,16 +24,14 @@ public class ProfileSteps extends BaseTest {
 
     @Then("Assert Selected Freelancer details Matches with Freelancer Details in First Page")
     public void assert_selected_freelancer_details_matches_with_freelancer_details_in_first_page() {
-        String randomFreelancer = "Sohail I.";
-        System.out.println("++++++++" + randomFreelancer);
+        String randomFreelancer = search.randomFreelancer;
         profile.assertFreelancerInfoMatches(randomFreelancer);
 
     }
 
     @And("Assert at least one attribute contains {string} in profilepage")
     public void assertAtLeastOneAttributeContainsInProfilepage(String skill) {
-        String randomFreelancer = "Sohail I.";
-        System.out.println("++++++++" + randomFreelancer);
+        String randomFreelancer = search.randomFreelancer;
         HashMap<String, String> freelancerProfile_ProfilePage = Serenity.sessionVariableCalled("FreeLancer_Profile_From_ProfilePage");
         search.keywordPresenceCheck(skill, randomFreelancer,  freelancerProfile_ProfilePage);
     }
