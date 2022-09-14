@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import net.serenitybdd.core.Serenity;
 import net.serenitybdd.core.annotations.findby.FindBy;
 import net.serenitybdd.core.pages.WebElementFacade;
+import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -14,6 +15,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class HomePage extends BasePage {
@@ -21,6 +23,8 @@ public class HomePage extends BasePage {
     /**
      * Home Page locators are defined here
      **/
+
+    private Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
 
     @FindBy(id = "px-captcha")
     public List<WebElement> recap;
@@ -68,7 +72,7 @@ public class HomePage extends BasePage {
     @SneakyThrows
     public HomePage checkCaptcha() {
         if (recap.size() != 0) {
-            System.out.println("Captcha is seen - Waiting for 1 minute");
+            logger.info("Captcha is seen - Waiting for 1 minute");
             Thread.sleep(60000);
             if(recap.size() != 0) {
                 Assertions.fail("The captcha is not selected within the time limit");
@@ -79,13 +83,15 @@ public class HomePage extends BasePage {
 
     public HomePage click(WebElement webElement) {
         super.clickOn(webElement);
+        logger.info("Clicked on the " + webElement);
         return this;
     }
 
-    public HomePage selectCatalog(String catalog) {
-        for (WebElementFacade query : catalogQuery) {
-            if (query.getText().contains(catalog)) {
-                click(query);
+    public HomePage selectCatalog(String text) {
+        for (WebElementFacade elementFacade : catalogQuery) {
+            if (elementFacade.getText().contains(text)) {
+                click(elementFacade);
+                logger.info("Element contains text " + text +  " So clicked on " + elementFacade);
                 break;
             }
         }
@@ -107,10 +113,12 @@ public class HomePage extends BasePage {
             jobProgress = getDriver().findElement(By.xpath(xpath));
             String[] jobProgressFullText = jobProgress.getText().split(" ");
             jobProgressText = jobProgressFullText[0];
+
+
         } else {
             jobProgressText = "No Job Progress Rate available for " + freelancerName;
         }
-
+        logger.info("Locating Job progress status for " + freelancerName);
         return jobProgressText;
     }
 
@@ -123,7 +131,7 @@ public class HomePage extends BasePage {
                     "/div[contains(@class,'clamped')]";
 
             WebElement overViewLocator = getDriver().findElement(By.xpath(xpath));
-
+        logger.info("Locating Overview / Summary for " + freelancerName);
             return overViewLocator;
         }
 
@@ -133,7 +141,7 @@ public class HomePage extends BasePage {
                 "//div[@class='up-skill-badge']";
 
         List<WebElement> skillsLocator = getDriver().findElements(By.xpath(xpath));
-
+        logger.info("Locating Skills for " + freelancerName);
         return skillsLocator;
     }
 
@@ -148,6 +156,7 @@ public class HomePage extends BasePage {
                 freelancer.click();
             }
         }
+        logger.info("Random Freelancer is located and scrolled to element and clicked" + freelancerName);
         return  this;
     }
 }

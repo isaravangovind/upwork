@@ -2,76 +2,87 @@ package com.upwork.steps;
 
 import com.upwork.pages.HomePage;
 import com.upwork.support.FreelancerList;
-import com.upwork.support.FreelancersDetails;
+import com.upwork.support.AllFreelancersInfo;
 import com.upwork.support.Constants;
 import com.upwork.support.SingleFreeLancerProfile;
-import io.cucumber.java.ro.Si;
 import lombok.SneakyThrows;
 import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.ManagedPages;
 import net.thucydides.core.annotations.Step;
+import org.apache.log4j.Logger;
+import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Home {
 
     /**
-     *
      * This Class contains the steps and logic of your test cases
-     *
+     * <p>
      * Page object from HOMWPAGE class can be called from this class and do anu action
-     *
+     * <p>
      * Any Declaration to store data / retrieve data can be done here
-     *
-     *
      *
      * @ManagedPages Annotation will inti the pages
      * If Any other pages has to to initiated then add it here
-     *
-     *
      * @Step is used to indicate this step in report
-     *
+     * <p>
      * Here "Open" is the serenity inbuilt method is used to pass the URL in the browser
      * "Open" similar to driver.get(url)
      * the url and driver is from serenity.properties
-     *
+     * <p>
      * To try with different browser
      * Change - webdriver.driver=chrome to webdriver.driver=firefox
      * Testers can ignore downloading chromedriver.exe / geckodriver.exe
      * Serenity will take care downloading driver automatically
-     *
-     *
      */
 
 
     @ManagedPages
     HomePage homepage;
 
-    FreelancersDetails freelancersDetails = new FreelancersDetails();
-    FreelancerList freelancerList = new FreelancerList();
-    SingleFreeLancerProfile singleFreeLancerProfile = new SingleFreeLancerProfile();
+    private Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
+
+
+    /**
+     * Getter and Setter Method or POJO classes initialized below
+     * Easy to get access to data
+     * allFreelancersInfo - Master class contains all freelancer info from search page
+     * freelancerList - List of freelancers Names
+     *
+     */
+
+    public AllFreelancersInfo allFreelancersInfo = new AllFreelancersInfo();
+    public FreelancerList freelancerList = new FreelancerList();
+
+    /**
+     * freelancerMap - Master Map contains all freelancer info from search page
+     */
 
     LinkedHashMap<String, LinkedHashMap<String, String>> freelancerMap = new LinkedHashMap<>();
     List<String> freeLancer = new ArrayList<>();
+
+    SoftAssertions soft = new SoftAssertions();
 
 
     @SneakyThrows
     @Step("Launch the browser")
     public void launchApp() {
         homepage.open();
-        Thread.sleep(5000);
-        System.out.println("Application is Launched in the Browser");
-//        homepage.checkCaptcha();
+        logger.info("Application is Launched in the Browser");
+        homepage.checkCaptcha();
     }
 
     @Step("Select {0} from the Catalog DropDown ")
     public void selectCategory(String catalog) {
-//        homepage.click(homepage.catalogDropDown)
-//                .selectCatalog(catalog);
-        System.out.println("Catalog " + catalog.toUpperCase(Locale.ROOT) + " selected");
+        homepage.click(homepage.catalogDropDown)
+                .selectCatalog(catalog);
+        logger.info(catalog.toUpperCase(Locale.ROOT) + "is selected from dropdown");
     }
 
     @SneakyThrows
@@ -81,14 +92,14 @@ public class Home {
         if (homepage.getAttributeText(homepage.searchTextBox, "placeholder").equals("Search Talent")) {
             homepage.enterByChar(homepage.searchTextBox, skillKeyword);
             homepage.searchTextBox.sendKeys(Keys.ENTER);
-            System.out.println("No SkillSet suggestion dropdown is displayed");
+            System.out.println("Search for professionals with SkillSet " + skillKeyword);
         } else {
             homepage.enterByChar(homepage.searchTextBox, skillKeyword);
             Thread.sleep(5000);
-            if(homepage.searchMenuMatch.size() !=0) {
+            if (homepage.searchMenuMatch.size() != 0) {
                 System.out.println(homepage.searchMenuMatch.get(0).getText());
                 homepage.searchMenuMatch.get(0).click();
-                System.out.println("SkillSet suggestion dropdown is displayed and selected " + skillKeyword.toUpperCase(Locale.ROOT));
+                System.out.println("Search for professionals with SkillSet " + skillKeyword.toUpperCase(Locale.ROOT));
             } else {
                 System.out.println("No SkillSet suggestion dropdown is displayed");
                 homepage.searchTextBox.sendKeys(Keys.ENTER);
@@ -100,142 +111,203 @@ public class Home {
         homepage.checkCaptcha();
     }
 
-    public void setAllFreeLancerInfo() {
+    public void getAllFreeLancerInfo() {
 
         for (int i = 0; i < homepage.freelancerCard.size(); i++) {
+
+            /**
+             *
+             * SKILLS - of the freelancer is declared in the SET
+             * In This set all skills from the UI will be stored
+             *
+             * LinkedHashMap<String, String> freelancerDetails
+             * This Map will have details of individual freelancer
+             * Keys as Title, Country, Job Progress, Rate per hour Skills, Summary
+             * Respective values will be retrived from UI and stored here
+             */
             Set<String> skills = new HashSet<>();
 
             LinkedHashMap<String, String> freelancerDetails = new LinkedHashMap<>();
 
-            // Get Name of the freelancer
+            /**
+             *
+             * Getting Freelancer Name, Title, Rate, JobProgress
+             * SkillSet and Summary from UI
+             *
+             */
             String freelancerName = homepage.freelancerName.get(i).getText().trim();
             String freelancerTitle = homepage.freelancerTitle.get(i).getText().trim();
+            String freelancerCountryName = homepage.freelancerCountryName.get(i).getText().trim();
             String freelancerRate = homepage.freelancerRateinDollars.get(i).getText().trim()
                     + homepage.freelancerRatePerhour.get(i).getText().trim();
             String freelancerJobprogress = homepage.getJobProgress(freelancerName);
-            String freelancerCountryName = homepage.freelancerCountryName.get(i).getText().trim();
 
-            System.out.println(freelancerName);
-
-
-            WebElement getFreelancerOverview = homepage.getOverviewWebelement(freelancerName);
-
-            // Get Summary of freelancer's
-            String summary = getFreelancerOverview.getText();
-
-            // Get the freelancer's skill set in a List
             List<WebElement> getFreelancerSkills = homepage.getSkillsWebElement(freelancerName);
 
             for (WebElement skill : getFreelancerSkills) {
                 skills.add(skill.getText().trim());
             }
 
-            freelancerDetails.put(freelancerName.concat(Constants.TITLE.getProfileDef()), freelancerTitle);
-            freelancerDetails.put(freelancerName.concat(Constants.COUNTRY.getProfileDef()), freelancerCountryName);
-            freelancerDetails.put(freelancerName.concat(Constants.RATE.getProfileDef()), freelancerRate);
-            freelancerDetails.put(freelancerName.concat(Constants.JOBPROGRESS.getProfileDef()), freelancerJobprogress);
-            freelancerDetails.put(freelancerName.concat(Constants.SKILLS.getProfileDef()), String.valueOf(skills));
-            freelancerDetails.put(freelancerName.concat(Constants.SUMMARY.getProfileDef()), summary);
+            WebElement getFreelancerOverview = homepage.getOverviewWebelement(freelancerName);
+            String summary = getFreelancerOverview.getText();
+
+            freelancerDetails.put(Constants.TITLE.getProfileDef(), freelancerTitle);
+            freelancerDetails.put(Constants.COUNTRY.getProfileDef(), freelancerCountryName);
+            freelancerDetails.put(Constants.RATE.getProfileDef(), freelancerRate);
+            freelancerDetails.put(Constants.JOBPROGRESS.getProfileDef(), freelancerJobprogress);
+            freelancerDetails.put(Constants.SKILLS.getProfileDef(), String.valueOf(skills));
+            freelancerDetails.put(Constants.SUMMARY.getProfileDef(), summary);
+
+            String content = freelancerDetails.entrySet()
+                    .stream()
+                    .map(e -> e.getKey() + "=" + e.getValue() + "")
+                    .collect(Collectors.joining(", \r\n"));
+
+            Serenity.recordReportData().withTitle(freelancerName).andContents(content);
+
+            /**
+             *
+             * freelancerMap - is the Master Map
+             * Where All Freelancers Details in 1st page are stored
+             *
+             *
+             * Key = Freelancer Name
+             * Value = freelancerDetails [Title, Rate, JobProgress, SkillSet and Summary]
+             */
 
             freelancerMap.put(freelancerName, freelancerDetails);
         }
-        System.out.println(freelancerMap);
 
-        freelancersDetails.setFreelancerMap(freelancerMap);
+        allFreelancersInfo.setFreelancerMap(freelancerMap);
+        String content = freelancerMap.entrySet()
+                .stream()
+                .map(e -> e.getKey() + "=" + e.getValue() + "")
+                .collect(Collectors.joining(", \r\n"));
 
+        logger.info("Get all freelancer info on search page and stores in freelancerMap" + content);
+        Serenity.recordReportData().withTitle("All Freelancer Details in the 1st page").andContents(content);
     }
 
-    @Step
+    @Step("Validate At least on Attribute (Title / Summary / Skills) contains the keyword {0}")
     public void verifyAtLeastOneAttributeContainKeywork(String skillSet) {
 
+        /**
+         *  To verify the keyword to present in any of the the attributes
+         *
+         *  1. Need to get each freelancer's profile Map containing the Attribute
+         *          We already set all freelancer detail Map in AllFreelancerInfo Class
+         *          User getFreelancerMap to retrieve all information
+         *
+         *  2. Take each freelancer's attribute and check whether the keyword is present
+         *
+         *
+         */
 
-        List<String> listofFreeLancers = new ArrayList<>(freelancersDetails.getFreelancerMap().keySet());
+        /**
+         *
+         * listofFreeLancers = Taking all list of freelancer
+         *
+         */
+        List<String> listofFreeLancers = new ArrayList<>(allFreelancersInfo.getFreelancerMap().keySet());
         freelancerList.setFreelancerList(listofFreeLancers);
 
         HashMap<String, String> freelancerProfile;
-        System.out.println(freelancerList);
 
         for (String freelancer : listofFreeLancers) {
-            System.out.println(freelancer);
+
+            freelancerProfile = allFreelancersInfo.getFreelancerMap().get(freelancer);
+            keywordPresenceCheck(skillSet, freelancer, freelancerProfile);
 
 
-            freelancerProfile = freelancersDetails.getFreelancerMap().get(freelancer);
+        }
+    }
 
-            boolean titleCheck = Pattern.compile(Pattern.quote(skillSet),
-                    Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(freelancer + Constants.TITLE.getProfileDef())).find();
+    public void keywordPresenceCheck(String skillSet, String freelancer, HashMap<String, String> freelancerProfile) {
 
-            boolean skillCheck = Pattern.compile(Pattern.quote(skillSet),
-                    Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(freelancer + Constants.SKILLS.getProfileDef())).find();
+        boolean titleCheck = Pattern.compile(Pattern.quote(skillSet),
+                Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(Constants.TITLE.getProfileDef())).find();
 
-            boolean summaryCheck = Pattern.compile(Pattern.quote(skillSet),
-                    Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(freelancer+ Constants.SUMMARY.getProfileDef())).find();
+        boolean skillCheck = Pattern.compile(Pattern.quote(skillSet),
+                Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(Constants.SKILLS.getProfileDef())).find();
 
-            if (titleCheck) {
-                System.out.println("The title of " + freelancer + " contains the keyword " + skillSet.toUpperCase(Locale.ROOT));
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.TITLE.getProfileDef()))
-                        .andContents("The title of " + freelancer + " contains the keyword "
-                        + skillSet.toUpperCase(Locale.ROOT));
-            } else {
+        boolean summaryCheck = Pattern.compile(Pattern.quote(skillSet),
+                Pattern.CASE_INSENSITIVE).matcher(freelancerProfile.get(Constants.SUMMARY.getProfileDef())).find();
 
-                System.out.println("The title of " + freelancer + " does not contain " + skillSet.toUpperCase(Locale.ROOT));
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.TITLE.getProfileDef()))
-                        .andContents("The title of " + freelancer + " does not contain "
-                        + skillSet.toUpperCase(Locale.ROOT));
-            }
+        List<String> presenceOfKeyword = new ArrayList<>();
+        List<Boolean> assertCheck = new ArrayList<>();
+        assertCheck.add(titleCheck);
+        assertCheck.add(skillCheck);
+        assertCheck.add(summaryCheck);
 
-            if (skillCheck) {
+        if (titleCheck) {
 
-                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is present in one or more skill set of " + freelancer);
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.SKILLS.getProfileDef()))
-                        .andContents(skillSet.toUpperCase(Locale.ROOT) + " is present in one or more skill set of " + freelancer);
-            } else {
+            //   System.out.println("The title of " + freelancer + " contains the keyword " + skillSet.toUpperCase(Locale.ROOT));
+            presenceOfKeyword.add("The title of " + freelancer + " contains the keyword " + skillSet.toUpperCase(Locale.ROOT));
 
-                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is not present in any skill set of " + freelancer);
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.SKILLS.getProfileDef()))
-                        .andContents(skillSet.toUpperCase(Locale.ROOT) + " is not present in any skill set of " + freelancer);
-            }
 
-            if (summaryCheck) {
+        } else {
 
-                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.SUMMARY.getProfileDef()))
-                        .andContents(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
-            } else {
-
-                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
-                Serenity.recordReportData().withTitle(freelancer.concat(Constants.SUMMARY.getProfileDef()))
-                        .andContents(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
-            }
+//                System.out.println("The title of " + freelancer + " does not contain " + skillSet.toUpperCase(Locale.ROOT));
+            presenceOfKeyword.add("The title of " + freelancer + " does not contain " + skillSet.toUpperCase(Locale.ROOT));
 
         }
 
+        if (skillCheck) {
 
+//                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is present in one or more skill set of " + freelancer);
+            presenceOfKeyword.add(skillSet.toUpperCase(Locale.ROOT) + " is present in one or more skill set of " + freelancer);
+
+        } else {
+
+//                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is not present in any skill set of " + freelancer);
+            presenceOfKeyword.add(skillSet.toUpperCase(Locale.ROOT) + " is not present in any skill set of " + freelancer);
+
+        }
+
+        if (summaryCheck) {
+
+//                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
+            presenceOfKeyword.add(skillSet.toUpperCase(Locale.ROOT) + " is present summary of " + freelancer);
+
+        } else {
+
+//                System.out.println(skillSet.toUpperCase(Locale.ROOT) + " is not present summary of " + freelancer);
+            presenceOfKeyword.add(skillSet.toUpperCase(Locale.ROOT) + " is not present summary of " + freelancer);
+
+        }
+
+        String result = presenceOfKeyword.toString()
+                .replace(", ", "\r\n")
+                .replace("[", "")
+                .replace("]", "");
+
+        System.out.println(freelancer + "\r\n" + result);
+        logger.info("Checking the presence of " + skillSet.toUpperCase(Locale.ROOT) + "Keyword in each attributes" +result);
+
+        Serenity.recordReportData().withTitle(freelancer)
+                .andContents(result);
+
+        soft.assertThat(assertCheck.contains(true)).as("No Attribute has the keyword").isEqualTo(true);
+        logger.info("Result Status => \r\n " + assertCheck.contains(true));
+        soft.assertAll();
 
     }
+
+
+    public static String randomFreelancer = "";
 
     @Step("click on a random freelancer")
     public void clickonrandomfreelancerprofile() {
 
         Random rand = new Random();
         freeLancer = freelancerList.getFreelancerList();
-        String randomFreelancer = freeLancer.get(rand.nextInt(freeLancer.size()));
-        System.out.println(randomFreelancer);
-        singleFreeLancerProfile.setFreelancer(randomFreelancer);
-        singleFreeLancerProfile.setFreelancerProfile(freelancersDetails.getFreelancerMap().get(randomFreelancer));
+        randomFreelancer = freeLancer.get(rand.nextInt(freeLancer.size()));
+
+        Serenity.setSessionVariable("FreeLancer_Profile_From_1st_Page").to(allFreelancersInfo.getFreelancerMap().get(randomFreelancer));
+
         homepage.clickOnRandomFreelancer(randomFreelancer);
-        Serenity.recordReportData().withTitle("Random FreeLancer")
-                .andContents("The Random FreeLancer clicked  "+ randomFreelancer.toUpperCase(Locale.ROOT));
-        
-//
-//        homepage.clickOnRandomFreelancer(randomElement);
-//        homepage.verifyTheprofile(randomElement, getFreelancerMap.get(randomElement));
-    }
-
-    @Step("Verify that {0} profile is matching with 1st page")
-    public void assertFreelancerInfoMatches() {
-
-        HashMap<String, String> freelancerProfile = singleFreeLancerProfile.getFreelancerProfile();
-
+        Serenity.recordReportData().withTitle(randomFreelancer.toUpperCase(Locale.ROOT) + "Profile is clicked")
+                .andContents("The selected Random FreeLancer is  " + randomFreelancer.toUpperCase(Locale.ROOT));
 
 
     }

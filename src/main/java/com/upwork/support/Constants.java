@@ -4,12 +4,20 @@ public enum Constants {
 
 
 
-    TITLE("'s Title"),
-    COUNTRY("'s CountryName"),
-    RATE("'s Rate"),
-    JOBPROGRESS("'s JobProgress"),
-    SKILLS("'s Skills"),
-    SUMMARY("'s Summary");
+//    TITLE("'s Title"),
+//    COUNTRY("'s CountryName"),
+//    RATE("'s Rate"),
+//    JOBPROGRESS("'s JobProgress"),
+//    SKILLS("'s Skills"),
+//    SUMMARY("'s Summary");
+
+
+    TITLE("Title"),
+    COUNTRY("CountryName"),
+    RATE("Rate"),
+    JOBPROGRESS("JobProgress"),
+    SKILLS("Skills"),
+    SUMMARY("Summary");
 
     private String profiledefinations;
 
