@@ -46,7 +46,7 @@ public class HomePage extends BasePage {
     public List<WebElementFacade> searchMenuMatch;
 
 
-    @FindBy(css = "div.up-card div.up-card-hover")
+    /*@FindBy(css = "div.up-card div.up-card-hover")
     public List<WebElementFacade> freelancerCard;
 
     @FindBy(css = "div.identity-name")
@@ -66,7 +66,7 @@ public class HomePage extends BasePage {
 
 
     @FindBy(css = "span[itemprop='country-name']")
-    public List<WebElementFacade> freelancerCountryName;
+    public List<WebElementFacade> freelancerCountryName;*/
 
 
     @SneakyThrows
@@ -98,65 +98,6 @@ public class HomePage extends BasePage {
         return this;
     }
 
-    public String getJobProgress(String freelancerName) {
-
-        String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
-                "/ancestor::div[contains(@class,'up-card-hover')]" +
-                "//div[contains(@class,'profile-stats')]" +
-                "//span[@class='up-job-success-text']";
 
 
-        String jobProgressText = "";
-
-        WebElement jobProgress = null;
-        if (getDriver().findElements(By.xpath(xpath)).size() != 0) {
-            jobProgress = getDriver().findElement(By.xpath(xpath));
-            String[] jobProgressFullText = jobProgress.getText().split(" ");
-            jobProgressText = jobProgressFullText[0];
-
-
-        } else {
-            jobProgressText = "No Job Progress Rate available for " + freelancerName;
-        }
-        logger.info("Locating Job progress status for " + freelancerName);
-        return jobProgressText;
-    }
-
-
-    public WebElement getOverviewWebelement(String freelancerName) {
-
-            String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
-                    "/ancestor::div[contains(@class,'up-card-hover')]" +
-                    "//div[contains(@class,'break')]" +
-                    "/div[contains(@class,'clamped')]";
-
-            WebElement overViewLocator = getDriver().findElement(By.xpath(xpath));
-        logger.info("Locating Overview / Summary for " + freelancerName);
-            return overViewLocator;
-        }
-
-    public List<WebElement> getSkillsWebElement(String freelancerName) {
-        String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
-                "/ancestor::div[contains(@class,'up-card-hover')]" +
-                "//div[@class='up-skill-badge']";
-
-        List<WebElement> skillsLocator = getDriver().findElements(By.xpath(xpath));
-        logger.info("Locating Skills for " + freelancerName);
-        return skillsLocator;
-    }
-
-
-    public HomePage clickOnRandomFreelancer(String randomFreelancer) {
-
-        for (WebElementFacade freelancer : freelancerName) {
-            if (freelancer.getText().trim().equals(randomFreelancer)) {
-                Actions actions = new Actions(getDriver());
-                actions.moveToElement(freelancer);
-                ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", freelancer);
-                freelancer.click();
-            }
-        }
-        logger.info("Random Freelancer is located and scrolled to element and clicked" + freelancerName);
-        return  this;
-    }
 }

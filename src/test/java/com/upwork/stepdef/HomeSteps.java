@@ -63,7 +63,7 @@ public class HomeSteps extends BaseTest {
         System.out.println("Searching for professional containing keyword : " + skillKeyword.toUpperCase(Locale.ROOT));
     }
 
-    @Then("Get all FreeLancer Info")
+   /* @Then("Get all FreeLancer Info")
     public void get_all_free_lancer_info() {
         home.getAllFreeLancerInfo();
         System.out.println("All Freelancers details are stored in Map");
@@ -84,7 +84,7 @@ public class HomeSteps extends BaseTest {
     public void click_on_random_freelancer_s_title() {
         home.clickonrandomfreelancerprofile();
         System.out.println("Click on Random Freelancer ");
-    }
+    }*/
 
 
 }

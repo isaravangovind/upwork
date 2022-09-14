@@ -12,7 +12,6 @@ public class BasePage extends PageObject {
         return getAttibuteText;
     }
 
-
     @SneakyThrows
     public void enterByChar(WebElementFacade element, String value) {
         char[] chars = value.toCharArray();
@@ -21,5 +20,4 @@ public class BasePage extends PageObject {
             element.sendKeys(Character.toString(c));
         }
     }
-
 }

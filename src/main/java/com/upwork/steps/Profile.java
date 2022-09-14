@@ -66,7 +66,7 @@ public class Profile {
                 .map(e -> e.getKey() + "=" + e.getValue() + "")
                 .collect(Collectors.joining(", \r\n")));
 
-//        randomFreelancer = "Sohail I.";
+        randomFreelancer = "Sohail I.";
 
 
         /**

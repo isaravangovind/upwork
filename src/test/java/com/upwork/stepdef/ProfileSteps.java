@@ -3,6 +3,7 @@ package com.upwork.stepdef;
 import com.upwork.basetest.BaseTest;
 import com.upwork.steps.Home;
 import com.upwork.steps.Profile;
+import com.upwork.steps.Search;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import net.serenitybdd.core.Serenity;
@@ -17,7 +18,7 @@ public class ProfileSteps extends BaseTest {
     Profile profile;
 
     @Steps
-    Home home;
+    Search search;
 
 
 
@@ -34,6 +35,6 @@ public class ProfileSteps extends BaseTest {
         String randomFreelancer = "Sohail I.";
         System.out.println("++++++++" + randomFreelancer);
         HashMap<String, String> freelancerProfile_ProfilePage = Serenity.sessionVariableCalled("FreeLancer_Profile_From_ProfilePage");
-        home.keywordPresenceCheck(skill, randomFreelancer,  freelancerProfile_ProfilePage);
+        search.keywordPresenceCheck(skill, randomFreelancer,  freelancerProfile_ProfilePage);
     }
 }
