@@ -7,6 +7,12 @@ import net.serenitybdd.core.pages.WebElementFacade;
 import java.util.List;
 
 public class IndividualProfilePage extends BasePage {
+    /**
+     *
+     * if the profile is opened in new window
+     * then use this pageobjects
+     *
+     */
 
     @FindBy(css = "div>section.up-card-section div>h1")
     public WebElementFacade viewprofile_freelancerName;

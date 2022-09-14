@@ -18,6 +18,20 @@ import org.apache.log4j.Logger;
 
 public class Profile {
 
+    /**
+     * This Class contains the steps and logic of your test cases
+     * <p>
+     * Page object from PROFILE class can be called from this class and do anu action
+     * <p>
+     * Any Declaration to store data / retrieve data can be done here
+     *
+     * @ManagedPages Annotation will inti the pages
+     * If Any other pages has to to initiated then add it here
+     * @Step is used to indicate this step in report
+     * <p>
+     *
+     */
+
     private Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
 
     SoftAssertions soft = new SoftAssertions();
