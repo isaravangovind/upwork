@@ -42,7 +42,4 @@ public class ProfilePage extends BasePage {
     @FindBy(xpath = "//div[contains(@class,'clamped')]/following-sibling::button/ancestor::section[contains(@class,'up-card-section')]/following-sibling::section/div[@class='skills']//li//a[contains(@class,'up-skill-badge')]")
     public List<WebElementFacade> viewprofile_SkillBadgewithLink;
 
-
-
-
 }
