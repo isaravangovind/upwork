@@ -2,10 +2,20 @@ package com.upwork.pages;
 
 import com.upwork.basepage.BasePage;
 import lombok.SneakyThrows;
+import net.serenitybdd.core.Serenity;
 import net.serenitybdd.core.annotations.findby.FindBy;
 import net.serenitybdd.core.pages.WebElementFacade;
+import org.apache.log4j.Logger;
+import org.assertj.core.api.Assertions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class HomePage extends BasePage {
@@ -14,8 +24,13 @@ public class HomePage extends BasePage {
      * Home Page locators are defined here
      **/
 
+    private Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass());
+
     @FindBy(id = "px-captcha")
     public List<WebElement> recap;
+
+    @FindBy(css = "span.nav-logo")
+    public WebElementFacade upworklogo;
 
     @FindBy(css = "div#nav-main button[data-cy='search-switch-btn']")
     public WebElementFacade catalogDropDown;
@@ -30,10 +45,118 @@ public class HomePage extends BasePage {
     @FindBy(css = "a span.is-match")
     public List<WebElementFacade> searchMenuMatch;
 
+
+    @FindBy(css = "div.up-card div.up-card-hover")
+    public List<WebElementFacade> freelancerCard;
+
+    @FindBy(css = "div.identity-name")
+    public List<WebElementFacade> freelancerName;
+
+    @FindBy(css = "div[data-qa=rate]>span>strong")
+    public List<WebElementFacade> freelancerRateinDollars;
+
+    @FindBy(css = "div[data-qa=rate]>span>span")
+    public List<WebElementFacade> freelancerRatePerhour;
+
+    @FindBy(css = "p.freelancer-title>strong")
+    public List<WebElementFacade> freelancerTitle;
+
+    @FindBy(css = "div.up-job-success-bar>span")
+    public List<WebElementFacade> jobsuccessPercentage;
+
+
+    @FindBy(css = "span[itemprop='country-name']")
+    public List<WebElementFacade> freelancerCountryName;
+
+
     @SneakyThrows
-    public void checkCaptcha() {
+    public HomePage checkCaptcha() {
         if (recap.size() != 0) {
+            logger.info("Captcha is seen - Waiting for 1 minute");
             Thread.sleep(60000);
+            if(recap.size() != 0) {
+                Assertions.fail("The captcha is not selected within the time limit");
+            }
         }
+        return this;
+    }
+
+    public HomePage click(WebElement webElement) {
+        super.clickOn(webElement);
+        logger.info("Clicked on the " + webElement);
+        return this;
+    }
+
+    public HomePage selectCatalog(String text) {
+        for (WebElementFacade elementFacade : catalogQuery) {
+            if (elementFacade.getText().contains(text)) {
+                click(elementFacade);
+                logger.info("Element contains text " + text +  " So clicked on " + elementFacade);
+                break;
+            }
+        }
+        return this;
+    }
+
+    public String getJobProgress(String freelancerName) {
+
+        String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
+                "/ancestor::div[contains(@class,'up-card-hover')]" +
+                "//div[contains(@class,'profile-stats')]" +
+                "//span[@class='up-job-success-text']";
+
+
+        String jobProgressText = "";
+
+        WebElement jobProgress = null;
+        if (getDriver().findElements(By.xpath(xpath)).size() != 0) {
+            jobProgress = getDriver().findElement(By.xpath(xpath));
+            String[] jobProgressFullText = jobProgress.getText().split(" ");
+            jobProgressText = jobProgressFullText[0];
+
+
+        } else {
+            jobProgressText = "No Job Progress Rate available for " + freelancerName;
+        }
+        logger.info("Locating Job progress status for " + freelancerName);
+        return jobProgressText;
+    }
+
+
+    public WebElement getOverviewWebelement(String freelancerName) {
+
+            String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
+                    "/ancestor::div[contains(@class,'up-card-hover')]" +
+                    "//div[contains(@class,'break')]" +
+                    "/div[contains(@class,'clamped')]";
+
+            WebElement overViewLocator = getDriver().findElement(By.xpath(xpath));
+        logger.info("Locating Overview / Summary for " + freelancerName);
+            return overViewLocator;
+        }
+
+    public List<WebElement> getSkillsWebElement(String freelancerName) {
+        String xpath = "//div[@class='identity-name' and contains(text(),'" + freelancerName + "')]" +
+                "/ancestor::div[contains(@class,'up-card-hover')]" +
+                "//div[@class='up-skill-badge']";
+
+        List<WebElement> skillsLocator = getDriver().findElements(By.xpath(xpath));
+        logger.info("Locating Skills for " + freelancerName);
+        return skillsLocator;
+    }
+
+
+    public HomePage clickOnRandomFreelancer(String randomFreelancer) {
+
+        for (WebElementFacade freelancer : freelancerName) {
+            if (freelancer.getText().trim().equals(randomFreelancer)) {
+                Actions actions = new Actions(getDriver());
+                actions.moveToElement(freelancer);
+                ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView(true);", freelancer);
+                freelancer.click();
+            }
+        }
+        logger.info("Random Freelancer is located and scrolled to element and clicked" + freelancerName);
+        return  this;
     }
 }
