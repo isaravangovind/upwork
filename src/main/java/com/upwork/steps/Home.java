@@ -92,16 +92,15 @@ public class Home {
         if (homepage.getAttributeText(homepage.searchTextBox, "placeholder").equals("Search Talent")) {
             homepage.enterByChar(homepage.searchTextBox, skillKeyword);
             homepage.searchTextBox.sendKeys(Keys.ENTER);
-            System.out.println("Search for professionals with SkillSet " + skillKeyword);
+            logger.info("Search for professionals with SkillSet " + skillKeyword);
         } else {
             homepage.enterByChar(homepage.searchTextBox, skillKeyword);
             Thread.sleep(5000);
             if (homepage.searchMenuMatch.size() != 0) {
-                System.out.println(homepage.searchMenuMatch.get(0).getText());
                 homepage.searchMenuMatch.get(0).click();
-                System.out.println("Search for professionals with SkillSet " + skillKeyword.toUpperCase(Locale.ROOT));
+                logger.info("Search for professionals with SkillSet " + skillKeyword.toUpperCase(Locale.ROOT));
             } else {
-                System.out.println("No SkillSet suggestion dropdown is displayed");
+                logger.info("No SkillSet suggestion dropdown is displayed so pressing enter");
                 homepage.searchTextBox.sendKeys(Keys.ENTER);
             }
 
@@ -302,10 +301,12 @@ public class Home {
         Random rand = new Random();
         freeLancer = freelancerList.getFreelancerList();
         randomFreelancer = freeLancer.get(rand.nextInt(freeLancer.size()));
+        logger.info("Random freelancer is selected");
 
         Serenity.setSessionVariable("FreeLancer_Profile_From_1st_Page").to(allFreelancersInfo.getFreelancerMap().get(randomFreelancer));
 
         homepage.clickOnRandomFreelancer(randomFreelancer);
+        logger.info("Random freelancer is clicked");
         Serenity.recordReportData().withTitle(randomFreelancer.toUpperCase(Locale.ROOT) + "Profile is clicked")
                 .andContents("The selected Random FreeLancer is  " + randomFreelancer.toUpperCase(Locale.ROOT));
 

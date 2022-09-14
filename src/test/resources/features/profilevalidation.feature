@@ -1,5 +1,7 @@
-Feature: Upwork Freelancer Profile Validation Based on a Keywork
+Feature: Upwork Freelancer Profile Validation Based on a Keyword
 
+
+  @hometask
   Scenario Outline: Upwork
     Given Launch upwork application
     When Focus onto "<Search>"
